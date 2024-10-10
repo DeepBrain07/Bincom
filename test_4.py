@@ -1,5 +1,4 @@
-import psycopg2
-import urllib.parse as urlparse
+import statistics
 
 # get the colours worn on Monday and put them in a list
 monday_colours = "GREEN, YELLOW, GREEN, BROWN, BLUE, PINK, BLUE, YELLOW, ORANGE, CREAM, ORANGE, RED, WHITE, BLUE, WHITE, BLUE, BLUE, BLUE, GREEN"
@@ -34,42 +33,9 @@ for d in list(days.keys()):
         else:
             colours[colour] = 1
 
-database_url = "postgres://yilvvlax:v3EuTzEVgjrNrKFYB-yHhMcNNAm6utHW@raja.db.elephantsql.com/yilvvlax"
+data = list(colours.values())
 
-# Parse the URL to get individual connection parameters
-url = urlparse.urlparse(database_url)
+# calculate variance
+variance = statistics.variance(data)
 
-# Use psycopg2 to connect with the parsed parameters
-connection = psycopg2.connect(
-    database=url.path[1:],  # remove the leading '/' from the path
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
-
-
-cursor = connection.cursor()
-
-# Data to be inserted into the table (example)
-data = [(k, v) for k, v in colours.items()]
-
-
-# Insert query
-insert_query = """
-    INSERT INTO my_table (colour, frequency)
-    VALUES (%s, %s)
-"""
-
-# Execute the insert query for each row of data
-cursor.executemany(insert_query, data)
-
-# Commit the transaction
-connection.commit()
-
-# Print a success message
-print("Data inserted successfully!")
-
-# Close the cursor and connection
-cursor.close()
-connection.close()
+print(f"Therefore, variance of the colours is: {variance}")

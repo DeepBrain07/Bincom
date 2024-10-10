@@ -1,6 +1,4 @@
 
-import statistics
-
 # get the colours worn on Monday and put them in a list
 monday_colours = "GREEN, YELLOW, GREEN, BROWN, BLUE, PINK, BLUE, YELLOW, ORANGE, CREAM, ORANGE, RED, WHITE, BLUE, WHITE, BLUE, BLUE, BLUE, GREEN"
 monday_colours = monday_colours.split(", ")
