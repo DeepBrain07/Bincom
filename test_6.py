@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import sql
 import urllib.parse as urlparse
 
 # get the colours worn on Monday and put them in a list
@@ -55,13 +56,23 @@ cursor = connection.cursor()
 data = [(k, v) for k, v in colours.items()]
 
 
-# Insert query
+create_table_query = """
+CREATE TABLE IF NOT EXISTS my_table (
+    colour VARCHAR(50) PRIMARY KEY,
+    frequency INT
+);
+"""
+cursor.execute(create_table_query)
+
+# Commit the transaction
+connection.commit()
+
 insert_query = """
     INSERT INTO my_table (colour, frequency)
     VALUES (%s, %s)
+    ON CONFLICT (colour) DO UPDATE SET frequency = EXCLUDED.frequency;
 """
 
-# Execute the insert query for each row of data
 cursor.executemany(insert_query, data)
 
 # Commit the transaction
